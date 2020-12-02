@@ -1,1 +1,171 @@
 
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Oct  9 16:24:57 2020
+
+@author: Amrit Raj
+"""
+
+import pandas as pd
+import numpy as np
+import matplotlib as plt
+import math
+
+data = pd.read_excel('AssignmentDmData.xlsx')
+# Showing the dataset...
+print(data)
+# Assigning the dataset into a variable...
+x = data.iloc[0:-1].values
+
+"""
+Sorting using bubble sort..
+"""
+
+def bubbleSort(arr): 
+    n = len(arr) 
+  
+    # Traverse through all array elements 
+    for i in range(n-1): 
+    # range(n) also work but outer loop will repeat one time more than needed. 
+  
+        # Last i elements are already in place 
+        for j in range(0, n-i-1): 
+  
+            # traverse the array from 0 to n-i-1 
+            # Swap if the element found is greater 
+            # than the next element 
+            if arr[j] > arr[j+1] : 
+                arr[j], arr[j+1] = arr[j+1], arr[j] 
+		
+bubbleSort(x)
+
+
+#..............Now we would go for equi-frequency binning..........
+#Calculating the bins..
+bins = []
+min_range = min(x)
+max_range = max(x)
+#Bin size of 5 each
+weidth = 5
+cur_range = min_range + weidth
+
+#Creating the bins
+ind = 0
+itr = math.floor(len(x)/weidth)
+for j in range(itr):
+	bin_temp = []
+	for i in range(weidth):
+		bin_temp.append(x[ind + i])
+	ind = ind + weidth
+	bins.append(bin_temp)
+print(bins[0])
+bin_temp = []
+for j in range(len(x) - (weidth*itr)):		
+	bin_temp.append(x[weidth*itr + j])
+bins.append(bin_temp)	
+
+#Now we will apply mean, median, and boundary binning on bins...
+# MEAN Binning
+
+bin_mean_frequency = []
+for i in bins:
+	sum = 0
+	count = 0
+	for j in i:
+		sum = sum + j
+		count = count + 1
+	avg = sum/count
+	for j in i:
+		bin_mean_frequency.append(avg)
+		
+# bin_mean_frequency is the binning by mean
+#MEDIAN Binning
+bin_median_frequency = []
+for i in bins:
+	sum = []
+	for j in i:
+		sum.append(j)
+	med = np.median(sum)
+	for j in i:
+		bin_median_frequency.append(med)
+# bin_median_frequency is the binning by median
+#Boundary Binning
+bin_boundary_frequency = []
+for i in bins:
+	sum = []
+	for j in i:
+		sum.append(j)
+	boundary_min = min(sum)
+	boundary_max = max(sum)
+	for j in i:
+		if j - boundary_min > j - boundary_max:
+			bin_boundary_frequency.append(boundary_max)
+		else:
+			bin_boundary_frequency.append(boundary_min)
+
+
+#..............Now we would go for equi-weidth binning..........
+			
+
+bins_new = []
+min_range_new = min(x)
+max_range_new = max(x)
+weidth_new = math.floor((max(x) - min(x))/100)
+cur_range_new = min_range + weidth_new
+
+#Creating the bins
+y = x
+for i in range(10000):
+	if cur_range_new > max_range_new + 1:
+		break
+	bin_temp_new = []
+	z = []
+	for j in range(len(y)):
+		if y[j] <= cur_range_new:
+			bin_temp_new.append(y[j])
+			z.append(9999)
+		else:
+			z.append(y[j])
+	if len(bin_temp_new) > 0:
+		bins_new.append(bin_temp_new)
+	cur_range_new = cur_range_new + weidth_new
+	y = z
+
+#bins_new is the set of bins for the data set...We would now proceed with it
+# MEAN Binning
+
+bin_mean_weidth = []
+for i in bins_new:
+	sum = 0
+	count = 0
+	for j in i:
+		sum = sum + j
+		count = count + 1
+	avg = sum/count
+	for j in i:
+		bin_mean_weidth.append(avg)
+		
+# bin_mean_weidth is the binning by mean
+#MEDIAN Binning
+bin_median_weidth = []
+for i in bins_new:
+	sum = []
+	for j in i:
+		sum.append(j)
+	med = np.median(sum)
+	for j in i:
+		bin_median_weidth.append(med)
+# bin_median_weidth is the binning by median
+#Boundary Binning
+bin_boundary_weidth = []
+for i in bins_new:
+	sum = []
+	for j in i:
+		sum.append(j)
+	boundary_min = min(sum)
+	boundary_max = max(sum)
+	for j in i:
+		if j - boundary_min > j - boundary_max:
+			bin_boundary_weidth.append(boundary_max)
+		else:
+			bin_boundary_weidth.append(boundary_min)
